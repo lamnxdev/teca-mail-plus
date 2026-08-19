@@ -136,7 +136,9 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   }
 })
 
-chrome.runtime.onStartup.addListener(async () => {
+chrome.windows.onCreated.addListener(async (window) => {
+  if (window.type !== "normal") return
+
   try {
     const settings = await getSettings()
     if (settings.serverUrl) {
@@ -145,7 +147,7 @@ chrome.runtime.onStartup.addListener(async () => {
     }
   } catch (error) {
     console.error(
-      "Đồng bộ khi khởi động trình duyệt thất bại:",
+      "Đồng bộ khi mở cửa sổ trình duyệt thất bại:",
       getErrorMessage(error)
     )
   }

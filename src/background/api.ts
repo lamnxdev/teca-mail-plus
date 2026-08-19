@@ -2,7 +2,9 @@ import axios, {
   isAxiosError,
   type AxiosRequestConfig,
   type AxiosResponse,
+  type InternalAxiosRequestConfig,
 } from "axios"
+
 import { getSecrets, getSettings } from "../storage/settings"
 import type { EmailFilterType, MailMessage, MailMessageDetail } from "../types"
 import type { ZimbraMessage, ZimbraSoapResponse } from "../types/api"
@@ -27,11 +29,83 @@ export function resetReauthStatus(): void {
   isReauthFailed = false
 }
 
-axios.defaults.timeout = 15000
+axios.defaults.timeout = 10000
 axios.defaults.withCredentials = false
 
 const apiClient = axios.create()
 const pendingSoapRequests = new Map<string, Promise<ZimbraSoapResponse>>()
+
+function injectAuthTokenToConfig(
+  config: AxiosRequestConfig | InternalAxiosRequestConfig,
+  token: string
+): void {
+  if (!config.data) {
+    return
+  }
+
+  if (typeof config.data === "string") {
+    try {
+      const parsed = JSON.parse(config.data)
+      if (parsed && typeof parsed === "object") {
+        if (!parsed.Header) {
+          parsed.Header = {}
+        }
+        if (!parsed.Header.context) {
+          parsed.Header.context = {
+            _jsns: "urn:zimbra",
+            format: { type: "js" },
+          }
+        }
+        parsed.Header.context.authToken = { _content: token }
+        config.data = JSON.stringify(parsed)
+        return
+      }
+    } catch {
+      if (
+        /("authToken"\s*:\s*\{\s*"_content"\s*:\s*")[^"]*(")/.test(config.data)
+      ) {
+        config.data = config.data.replace(
+          /("authToken"\s*:\s*\{\s*"_content"\s*:\s*")[^"]*(")/,
+          `$1${token}$2`
+        )
+        return
+      }
+    }
+  } else if (typeof config.data === "object" && config.data !== null) {
+    const dataObj = config.data as Record<string, any>
+    if (!dataObj.Header) {
+      dataObj.Header = {}
+    }
+    if (!dataObj.Header.context) {
+      dataObj.Header.context = {
+        _jsns: "urn:zimbra",
+        format: { type: "js" },
+      }
+    }
+    dataObj.Header.context.authToken = { _content: token }
+  }
+}
+
+async function retryWithReauth(
+  config: (AxiosRequestConfig | InternalAxiosRequestConfig) & {
+    _retry?: boolean
+  },
+  errorOrResponse: unknown
+): Promise<AxiosResponse> {
+  const settings = await getSettings()
+  if (!settings.autoLoginEnabled || isReauthFailed) {
+    return Promise.reject(errorOrResponse)
+  }
+
+  config._retry = true
+  try {
+    const newToken = await handleReauth()
+    injectAuthTokenToConfig(config, newToken)
+    return apiClient(config)
+  } catch (reauthError) {
+    return Promise.reject(reauthError)
+  }
+}
 
 // --- Axios Interceptors ---
 
@@ -42,12 +116,48 @@ apiClient.interceptors.request.use(async (config) => {
 })
 
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config as AxiosRequestConfig & {
-      _retry?: boolean
+  async (response) => {
+    if (isZimbraError(response.data)) {
+      const faultCode = response.data?.Body?.Fault?.Detail?.Error?.Code
+      const isAuthFault =
+        faultCode === ZimbraErrorCode.SERVICE_AUTH_REQUIRED ||
+        faultCode === ZimbraErrorCode.SERVICE_AUTH_EXPIRED
+
+      const originalRequest = response.config as
+        | (InternalAxiosRequestConfig & { _retry?: boolean })
+        | undefined
+
+      if (isAuthFault && originalRequest && !originalRequest._retry) {
+        const error = new axios.AxiosError(
+          response.data.Body.Fault.Reason?.Text || "Zimbra auth required",
+          "ERR_BAD_RESPONSE",
+          originalRequest,
+          response.request,
+          response
+        )
+        return retryWithReauth(originalRequest, error)
+      }
     }
-    const faultCode = error.response?.data?.Body?.Fault?.Detail?.Error?.Code
+    return response
+  },
+  async (error) => {
+    const originalRequest = error.config as
+      | (InternalAxiosRequestConfig & { _retry?: boolean })
+      | undefined
+    if (!originalRequest) {
+      return Promise.reject(error)
+    }
+
+    let errorData = error.response?.data
+    if (typeof errorData === "string") {
+      try {
+        errorData = JSON.parse(errorData)
+      } catch {
+        // Not a JSON string
+      }
+    }
+
+    const faultCode = errorData?.Body?.Fault?.Detail?.Error?.Code
     const isAuthFault =
       faultCode === ZimbraErrorCode.SERVICE_AUTH_REQUIRED ||
       faultCode === ZimbraErrorCode.SERVICE_AUTH_EXPIRED
@@ -56,39 +166,7 @@ apiClient.interceptors.response.use(
       (error.response?.status === 401 || isAuthFault) &&
       !originalRequest._retry
     ) {
-      const settings = await getSettings()
-      if (!settings.autoLoginEnabled || isReauthFailed) {
-        return Promise.reject(error)
-      }
-
-      originalRequest._retry = true
-      try {
-        const newToken = await handleReauth()
-
-        if (originalRequest.data) {
-          if (typeof originalRequest.data === "string") {
-            try {
-              const parsed = JSON.parse(originalRequest.data)
-              if (parsed?.Header?.context?.authToken?._content) {
-                parsed.Header.context.authToken._content = newToken
-                originalRequest.data = JSON.stringify(parsed)
-              }
-            } catch {
-              originalRequest.data = originalRequest.data.replace(
-                /("authToken"\s*:\s*\{\s*"_content"\s*:\s*")[^"]+(")/,
-                `$1${newToken}$2`
-              )
-            }
-          } else if (
-            originalRequest.data?.Header?.context?.authToken?._content
-          ) {
-            originalRequest.data.Header.context.authToken._content = newToken
-          }
-        }
-        return apiClient(originalRequest)
-      } catch (error) {
-        return Promise.reject(error)
-      }
+      return retryWithReauth(originalRequest, error)
     }
     return Promise.reject(error)
   }
@@ -199,13 +277,14 @@ export async function loginAndSaveToken(
   const authToken = await loginWithCredentials(serverUrl, username, password)
 
   const domain = new URL(serverUrl).hostname
+  const isSecure = serverUrl.startsWith("https://")
   await chrome.cookies.set({
     url: serverUrl,
     name: AUTH_TOKEN_COOKIE_NAME,
     value: authToken,
     domain: domain,
     path: "/",
-    secure: true,
+    secure: isSecure,
   })
 
   return authToken
