@@ -1,3 +1,12 @@
+import {
+  AlertTriangleIcon,
+  Check,
+  Copy,
+  RotateCcw,
+  Sparkles,
+} from "lucide-react"
+import { useState } from "react"
+
 import { Alert, AlertAction, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,14 +23,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {
-  AlertTriangleIcon,
-  Check,
-  Copy,
-  RotateCcw,
-  Sparkles,
-} from "lucide-react"
-import { useState } from "react"
 interface EmailSummaryCardProps {
   data: string | null
   loading: boolean

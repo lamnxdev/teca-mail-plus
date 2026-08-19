@@ -1,5 +1,7 @@
 import { ShieldAlert } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
+
 import { openZimbraInbox } from "../../utils/navigation"
 import EmptyState from "./EmptyState"
 

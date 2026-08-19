@@ -1,3 +1,6 @@
+import { Eye, EyeOff } from "lucide-react"
+import { useRef, useState, type ChangeEvent } from "react"
+
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -29,8 +32,6 @@ import {
   sendActionMessageAsync,
 } from "@/utils/sendActionMessage"
 import { isValidUrl, normalizeServerUrl } from "@/utils/url"
-import { Eye, EyeOff } from "lucide-react"
-import { useRef, useState, type ChangeEvent } from "react"
 
 interface CredentialsDialogProps {
   open: boolean

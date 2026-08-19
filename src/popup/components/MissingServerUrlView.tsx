@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button"
 import { Settings } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+
 import EmptyState from "./EmptyState"
 
 export default function MissingServerUrlView() {

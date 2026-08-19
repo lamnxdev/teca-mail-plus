@@ -1,6 +1,7 @@
+import { AlertTriangle, X } from "lucide-react"
+
 import { Alert, AlertAction, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { AlertTriangle, X } from "lucide-react"
 
 interface ErrorBannerProps {
   errorMessage: string | null

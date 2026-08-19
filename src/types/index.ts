@@ -73,6 +73,7 @@ export interface MessageErrorResponse {
 }
 
 export type MessageResponse<T = void> =
-  MessageSuccessResponse<T> | MessageErrorResponse
+  | MessageSuccessResponse<T>
+  | MessageErrorResponse
 
 export type MessageResult<T = void> = MessageResponse<T> | undefined

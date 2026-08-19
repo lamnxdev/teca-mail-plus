@@ -1,3 +1,5 @@
+import { Mail, MailOpen, Paperclip, SquareArrowOutUpRight } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
 import { Spinner } from "@/components/ui/spinner"
@@ -6,7 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Mail, MailOpen, Paperclip, SquareArrowOutUpRight } from "lucide-react"
+
 import { cn } from "../../lib/utils"
 import type { MailMessage } from "../../types"
 import { ZimbraMessageFlag } from "../../utils/constants"

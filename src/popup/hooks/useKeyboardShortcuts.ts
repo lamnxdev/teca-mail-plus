@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+
 import type { EmailFilterType, MailMessage } from "../../types"
 import { EmailFilter, ZimbraMessageFlag } from "../../utils/constants"
 import { openZimbraEmail, openZimbraInbox } from "../../utils/navigation"

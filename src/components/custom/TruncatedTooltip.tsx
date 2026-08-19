@@ -1,9 +1,10 @@
+import * as React from "react"
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import * as React from "react"
 
 interface TruncatedTooltipProps {
   children: React.ReactNode

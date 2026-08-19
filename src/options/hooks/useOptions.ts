@@ -1,8 +1,10 @@
+import { useEffect, useRef, useState } from "react"
+
 import { Settings } from "@/types"
 import { Action } from "@/utils/constants"
 import { sendActionMessageAsync } from "@/utils/sendActionMessage"
 import { isValidUrl, normalizeServerUrl } from "@/utils/url"
-import { useEffect, useRef, useState } from "react"
+
 import {
   DEFAULT_SETTINGS,
   getSecrets,

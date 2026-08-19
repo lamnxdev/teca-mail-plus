@@ -1,3 +1,6 @@
+import { Check, Database, KeyRound, Pencil, Sparkles } from "lucide-react"
+import { type RefObject, useState } from "react"
+
 import {
   Alert,
   AlertAction,
@@ -41,8 +44,6 @@ import { cn } from "@/lib/utils"
 import { clearAllSummaryCache, getSecrets } from "@/storage/settings"
 import { Action } from "@/utils/constants"
 import { sendActionMessage } from "@/utils/sendActionMessage"
-import { Check, Database, KeyRound, Pencil, Sparkles } from "lucide-react"
-import { type RefObject, useState } from "react"
 
 interface AiTabProps {
   aiApiKey: string | null

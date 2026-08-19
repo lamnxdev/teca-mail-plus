@@ -1,6 +1,8 @@
+import type { RefObject } from "react"
+
 import { cn } from "@/lib/utils"
 import type { EmailFilterType } from "@/types"
-import type { RefObject } from "react"
+
 import EmailDetail from "./EmailDetail"
 
 interface PopupDetailContainerProps {

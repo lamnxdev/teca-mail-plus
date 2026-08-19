@@ -1,11 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { Kbd, KbdGroup } from "@/components/ui/kbd"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { useTheme } from "@/components/theme-provider"
 import {
   Keyboard,
   Moon,
@@ -15,6 +7,16 @@ import {
   SquareArrowOutUpRight,
   Sun,
 } from "lucide-react"
+
+import { useTheme } from "@/components/theme-provider"
+import { Button } from "@/components/ui/button"
+import { Kbd, KbdGroup } from "@/components/ui/kbd"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 import { cn } from "../../lib/utils"
 import { Nullish, StatusType } from "../../types"
 import { APP_NAME, AppStatus } from "../../utils/constants"

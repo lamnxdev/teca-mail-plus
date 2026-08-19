@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react"
+
 import { useDebounce } from "@/hooks/useDebounce"
 import { getAppState } from "@/storage/settings"
 import type { AppState, EmailFilterType, MailMessage } from "@/types"
@@ -8,7 +10,7 @@ import {
   ZimbraMessageFlag,
 } from "@/utils/constants"
 import { sendActionMessage } from "@/utils/sendActionMessage"
-import { useEffect, useRef, useState } from "react"
+
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts"
 import { useSearchRefresh } from "./useSearchRefresh"
 

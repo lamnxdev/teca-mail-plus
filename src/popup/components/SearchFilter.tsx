@@ -1,3 +1,5 @@
+import { Search, X } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import {
   InputGroup,
@@ -5,7 +7,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import { Search, X } from "lucide-react"
+
 import type { EmailFilterType } from "../../types"
 import { EmailFilter } from "../../utils/constants"
 

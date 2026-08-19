@@ -1,3 +1,5 @@
+import { Bell, RefreshCw } from "lucide-react"
+
 import {
   Item,
   ItemActions,
@@ -15,7 +17,6 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { TabsContent } from "@/components/ui/tabs"
-import { Bell, RefreshCw } from "lucide-react"
 
 interface PreferencesTabProps {
   pollingInterval: number

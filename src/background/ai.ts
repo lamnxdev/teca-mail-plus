@@ -1,5 +1,7 @@
-import { DEFAULT_AI_MODEL } from "@/utils/constants"
 import Groq from "groq-sdk"
+
+import { DEFAULT_AI_MODEL } from "@/utils/constants"
+
 import { getSecrets } from "../storage/settings"
 import type { MailMessageDetail } from "../types"
 

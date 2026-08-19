@@ -2,32 +2,32 @@
   "name": "zimmail-plus",
   "version": "1.10.3",
   "description": "Nhận thông báo, xem nhanh và quản lý email tức thì mà không cần mở trang Zimbra Mail.",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "format": "prettier --write \"**/*.{js,ts,tsx,json,css,html}\"",
-    "typecheck": "tsc -b --noEmit",
-    "preview": "vite preview",
-    "prepare": "husky"
+  "keywords": [
+    "chrome-extension",
+    "mail-plus",
+    "notifier",
+    "zimbra"
+  ],
+  "homepage": "https://github.com/lamnx-dev/zimmail-plus#readme",
+  "bugs": {
+    "url": "https://github.com/lamnx-dev/zimmail-plus/issues"
   },
+  "license": "MIT",
+  "author": "lamnx-dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lamnx-dev/zimmail-plus.git"
   },
-  "keywords": [
-    "chrome-extension",
-    "zimbra",
-    "notifier",
-    "mail-plus"
-  ],
-  "author": "lamnx-dev",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/lamnx-dev/zimmail-plus/issues"
-  },
-  "homepage": "https://github.com/lamnx-dev/zimmail-plus#readme",
   "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "fmt": "oxfmt",
+    "typecheck": "tsc -b --noEmit",
+    "preview": "vite preview",
+    "prepare": "husky"
+  },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "axios": "^1.18.1",
@@ -46,7 +46,6 @@
   "devDependencies": {
     "@babel/core": "^7.29.7",
     "@crxjs/vite-plugin": "^2.7.1",
-    "@eslint/js": "^10.0.1",
     "@rolldown/plugin-babel": "^0.2.3",
     "@types/babel__core": "^7.20.5",
     "@types/chrome": "^0.2.2",
@@ -55,17 +54,16 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "babel-plugin-react-compiler": "^1.0.0",
-    "eslint": "^10.6.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.3",
-    "globals": "^17.7.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
-    "prettier": "^3.9.5",
-    "prettier-plugin-tailwindcss": "^0.8.1",
+    "oxfmt": "^0.64.0",
+    "oxlint": "^1.79.0",
     "typescript": "~6.0.2",
-    "typescript-eslint": "^8.62.0",
     "vite": "^8.1.1",
     "vite-plugin-zip-pack": "^1.2.4"
+  },
+  "lint-staged": {
+    "*": "oxfmt --no-error-on-unmatched-pattern",
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "pnpm run lint"
   }
 }

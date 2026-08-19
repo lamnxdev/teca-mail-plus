@@ -1,10 +1,11 @@
 import type { AppState, EmailFilterType, MailMessage } from "@/types"
+
+import { ACTIVE_STATES, type ActiveState } from "../hooks/usePopup"
 import DisconnectedView from "./DisconnectedView"
 import EmailList from "./EmailList"
 import EmptyFilterView from "./EmptyFilterView"
 import ListSkeleton from "./ListSkeleton"
 import MissingServerUrlView from "./MissingServerUrlView"
-import { ACTIVE_STATES, type ActiveState } from "../hooks/usePopup"
 
 interface PopupMainContentProps {
   activeState: ActiveState

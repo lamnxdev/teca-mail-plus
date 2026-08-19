@@ -1,3 +1,5 @@
+import { ArrowLeft } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Kbd } from "@/components/ui/kbd"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -6,7 +8,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { ArrowLeft } from "lucide-react"
 
 interface DetailSkeletonProps {
   handleGoBack?: () => void

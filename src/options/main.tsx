@@ -1,7 +1,9 @@
-import { ThemeProvider } from "@/components/theme-provider"
-import { TooltipProvider } from "@/components/ui/tooltip"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
+
+import { ThemeProvider } from "@/components/theme-provider"
+import { TooltipProvider } from "@/components/ui/tooltip"
+
 import "../assets/styles/index.css"
 import Options from "./Options"
 

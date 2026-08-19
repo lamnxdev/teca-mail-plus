@@ -1,3 +1,5 @@
+import { Laptop, Moon, Sun } from "lucide-react"
+
 import { useTheme } from "@/components/theme-provider"
 import { Button } from "@/components/ui/button"
 import {
@@ -6,7 +8,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
-import { Laptop, Moon, Sun } from "lucide-react"
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()

@@ -1,3 +1,17 @@
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Check,
+  Download,
+  Mail,
+  MailOpen,
+  Paperclip,
+  RotateCcw,
+  Sparkles,
+  SquareArrowOutUpRight,
+} from "lucide-react"
+import React, { useEffect, useState } from "react"
+
 import { TruncatedTooltip } from "@/components/custom/TruncatedTooltip"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,19 +29,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import {
-  AlertTriangle,
-  ArrowLeft,
-  Check,
-  Download,
-  Mail,
-  MailOpen,
-  Paperclip,
-  RotateCcw,
-  Sparkles,
-  SquareArrowOutUpRight,
-} from "lucide-react"
-import React, { useEffect, useState } from "react"
+
 import { downloadAttachment } from "../../background/api"
 import { cn } from "../../lib/utils"
 import type { EmailFilterType, MailMessageDetail } from "../../types"

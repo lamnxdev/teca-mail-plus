@@ -1,3 +1,11 @@
+import { Check, Lock, Pencil, Server } from "lucide-react"
+import {
+  useState,
+  type ChangeEvent,
+  type FocusEvent,
+  type RefObject,
+} from "react"
+
 import { Button } from "@/components/ui/button"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import {
@@ -25,13 +33,6 @@ import {
 import { Action } from "@/utils/constants"
 import { sendActionMessage } from "@/utils/sendActionMessage"
 import { isValidUrl, normalizeServerUrl } from "@/utils/url"
-import { Check, Lock, Pencil, Server } from "lucide-react"
-import {
-  useState,
-  type ChangeEvent,
-  type FocusEvent,
-  type RefObject,
-} from "react"
 
 interface AccountTabProps {
   serverUrl: string

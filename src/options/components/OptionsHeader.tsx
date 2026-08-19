@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { APP_NAME } from "@/utils/constants"
+
 import packageJson from "../../../package.json"
 
 export function OptionsHeader() {

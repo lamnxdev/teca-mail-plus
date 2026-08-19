@@ -1,4 +1,5 @@
 import { CheckCircle, Inbox, Paperclip, Search } from "lucide-react"
+
 import type { EmailFilterType } from "../../types"
 import { EmailFilter } from "../../utils/constants"
 import EmptyState from "./EmptyState"

@@ -1,8 +1,10 @@
+import { Check, Network, Sliders, Sparkles } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Check, Network, Sliders, Sparkles } from "lucide-react"
+
 import { AccountTab } from "./components/AccountTab"
 import { AiTab } from "./components/AiTab"
 import { CredentialsDialog } from "./components/CredentialsDialog"

@@ -1,6 +1,8 @@
+import { useEffect, useRef } from "react"
+
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { useEffect, useRef } from "react"
+
 import type { MailMessage, Nullish } from "../../types"
 import { formatTime } from "../../utils/date"
 import { EmailItem } from "./EmailItem"
