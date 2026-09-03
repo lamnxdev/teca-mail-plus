@@ -28,6 +28,8 @@ export interface ZimbraSoapBody {
  */
 export interface ZimbraSearchResponse {
   m?: ZimbraMessage[]
+  more?: boolean
+  offset?: number
   [key: string]: unknown
 }
 

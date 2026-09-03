@@ -6,7 +6,11 @@ import axios, {
 } from "axios"
 
 import { getSecrets, getSettings } from "../storage/settings"
-import type { EmailFilterType, MailMessage, MailMessageDetail } from "../types"
+import type {
+  MailMessageDetail,
+  SearchEmailsParams,
+  SearchEmailsResult,
+} from "../types"
 import type { ZimbraMessage, ZimbraSoapResponse } from "../types/api"
 import {
   AUTH_TOKEN_COOKIE_NAME,
@@ -393,10 +397,12 @@ export async function getLatestEmailDate(): Promise<number | null> {
   return messages.length > 0 && messages[0].d ? messages[0].d : null
 }
 
-export async function searchEmails(
-  queryText?: string,
-  filterType?: EmailFilterType
-): Promise<MailMessage[]> {
+export async function searchEmails({
+  queryText,
+  filterType,
+  offset,
+  limit = 20,
+}: SearchEmailsParams = {}): Promise<SearchEmailsResult> {
   const queryParts: string[] = []
 
   if (filterType === EmailFilter.UNREAD) {
@@ -414,19 +420,26 @@ export async function searchEmails(
   const finalQuery = queryParts.join(" ")
 
   const data = await postSoapRequest(
-    `SearchRequest${finalQuery ? `&q=${finalQuery}` : ""}`,
+    `SearchRequest${finalQuery ? `&query=${finalQuery}` : ""}${offset ? `&offset=${offset}` : ""}&limit=${limit}`,
     {
       SearchRequest: {
         _jsns: "urn:zimbraMail",
         types: "message",
-        limit: 100,
+        limit,
+        offset,
         query: finalQuery || undefined,
       },
     }
   )
 
-  const messages = data.Body?.SearchResponse?.m || []
-  return messages.map(parseMailMessage)
+  const searchResponse = data.Body?.SearchResponse
+  const messages = searchResponse?.m || []
+  const hasMore = Boolean(searchResponse?.more)
+
+  return {
+    messages: messages.map(parseMailMessage),
+    hasMore,
+  }
 }
 
 export async function getMessageDetail(

@@ -46,4 +46,5 @@ function Badge({
   )
 }
 
+// oxlint-disable-next-line react/only-export-components
 export { Badge, badgeVariants }

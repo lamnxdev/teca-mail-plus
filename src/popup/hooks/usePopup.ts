@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from "react"
 
 import { useDebounce } from "@/hooks/useDebounce"
 import { getAppState } from "@/storage/settings"
-import type { AppState, EmailFilterType, MailMessage } from "@/types"
+import type {
+  AppState,
+  EmailFilterType,
+  MailMessage,
+  SearchEmailsResult,
+} from "@/types"
 import {
   Action,
   AppStatus,
@@ -33,6 +38,8 @@ export function usePopup() {
   const [filterType, setFilterType] = useState<EmailFilterType>(EmailFilter.ALL)
   const [searchResults, setSearchResults] = useState<MailMessage[] | null>(null)
   const [searchLoading, setSearchLoading] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const debouncedSearchQuery = useDebounce(searchQuery)
   const searchRefresh = useSearchRefresh()
 
@@ -105,7 +112,7 @@ export function usePopup() {
       }
     })
 
-    sendActionMessage<MailMessage[]>({
+    sendActionMessage<SearchEmailsResult>({
       action: Action.SEARCH_EMAILS,
       payload: {
         query: debouncedSearchQuery,
@@ -114,12 +121,14 @@ export function usePopup() {
       onSuccess: (data) => {
         if (!isMounted) return
         setSearchLoading(false)
-        setSearchResults(data)
+        setSearchResults(data.messages)
+        setHasMore(data.hasMore)
       },
       onError: (err) => {
         if (!isMounted) return
         setSearchLoading(false)
         setSearchResults(null)
+        setHasMore(false)
         setErrorMessage("Tìm kiếm thất bại: " + err)
       },
     })
@@ -129,6 +138,39 @@ export function usePopup() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchQuery, filterType, searchRefresh.silentKey])
+
+  function loadMoreEmails() {
+    if (!hasMore || isLoadingMore || searchLoading) return
+
+    setIsLoadingMore(true)
+    const currentOffset = searchResults?.length || 0
+
+    sendActionMessage<SearchEmailsResult>({
+      action: Action.SEARCH_EMAILS,
+      payload: {
+        query: debouncedSearchQuery,
+        filter: filterType,
+        offset: currentOffset,
+      },
+      onSuccess: (data) => {
+        setSearchResults((prev) => {
+          if (!prev) return data.messages
+          const existingIds = new Set(prev.map((m) => m.id))
+          const newMessages = data.messages.filter(
+            (m) => !existingIds.has(m.id)
+          )
+          return [...prev, ...newMessages]
+        })
+        setHasMore(data.hasMore)
+      },
+      onError: (err) => {
+        setErrorMessage("Không thể tải thêm email: " + err)
+      },
+      onSettled: () => {
+        setIsLoadingMore(false)
+      },
+    })
+  }
 
   // Timer ẩn displayedEmailId sau hiệu ứng slide animation khi đóng trang Detail
   useEffect(() => {
@@ -373,6 +415,9 @@ export function usePopup() {
     onToggleDetailFlagRef: toggleDetailFlagRef,
     onToggleDetailSummarizeRef: toggleDetailSummarizeRef,
     onReachedBoundary: handleReachedBoundary,
+    hasMore,
+    isLoadingMore,
+    onLoadMore: loadMoreEmails,
   })
 
   return {
@@ -386,6 +431,9 @@ export function usePopup() {
     filterType,
     setFilterType,
     searchResults,
+    hasMore,
+    isLoadingMore,
+    loadMoreEmails,
     focusedIndex,
     setFocusedIndex,
     isHelpOpen,

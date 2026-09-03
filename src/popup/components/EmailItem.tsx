@@ -2,6 +2,7 @@ import { Mail, MailOpen, Paperclip, SquareArrowOutUpRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Spinner } from "@/components/ui/spinner"
 import {
   Tooltip,
@@ -59,7 +60,7 @@ export function EmailItem({
       ref={ref}
       onClick={() => openMailDetail(msg, index)}
       className={cn(
-        "group relative flex cursor-pointer gap-3 border-b px-4 py-3 transition-colors hover:bg-muted/50",
+        "group relative flex h-21 cursor-pointer gap-3 border-b px-4 py-3 transition-colors hover:bg-muted/50",
         isFocused && "border-l-4 border-l-primary bg-accent/60 pl-3"
       )}
     >
@@ -204,6 +205,22 @@ export function EmailItem({
             </TooltipContent>
           </Tooltip>
         </div>
+      </div>
+    </div>
+  )
+}
+
+export function EmailItemSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex h-21 items-start gap-3 px-4 py-3", className)}>
+      <Skeleton className="mt-0.5 size-9 shrink-0 rounded-full" />
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <div className="flex h-4.5 items-center justify-between gap-2">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-4 w-12" />
+        </div>
+        <Skeleton className="h-4 w-2/4" />
+        <Skeleton className="h-4 w-full" />
       </div>
     </div>
   )

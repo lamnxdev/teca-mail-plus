@@ -73,6 +73,9 @@ export default function Popup() {
           <PopupMainContent
             activeState={popup.activeState}
             searchResults={popup.searchResults}
+            hasMore={popup.hasMore}
+            isLoadingMore={popup.isLoadingMore}
+            loadMoreEmails={popup.loadMoreEmails}
             debouncedSearchQuery={popup.debouncedSearchQuery}
             filterType={popup.filterType}
             appState={popup.appState}

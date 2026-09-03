@@ -85,4 +85,5 @@ function TabsContent({
   )
 }
 
+// oxlint-disable-next-line react/only-export-components
 export { Tabs, TabsContent, TabsList, tabsListVariants, TabsTrigger }

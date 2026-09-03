@@ -402,7 +402,12 @@ chrome.runtime.onMessage.addListener(
     if (message.action === Action.SEARCH_EMAILS) {
       ;(async () => {
         try {
-          const data = await searchEmails(message.query, message.filter)
+          const data = await searchEmails({
+            queryText: message.query,
+            filterType: message.filter,
+            offset: message.offset,
+            limit: message.limit,
+          })
           sendResponse({ success: true, data })
         } catch (error) {
           sendResponse({ success: false, error: getErrorMessage(error) })

@@ -21,6 +21,18 @@ export interface MailMessage {
   flags: string
 }
 
+export interface SearchEmailsResult {
+  messages: MailMessage[]
+  hasMore: boolean
+}
+
+export interface SearchEmailsParams {
+  queryText?: string
+  filterType?: EmailFilterType
+  offset?: number
+  limit?: number
+}
+
 export interface AttachmentInfo {
   part: string
   filename: string

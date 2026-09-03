@@ -2,14 +2,16 @@ import type { AppState, EmailFilterType, MailMessage } from "@/types"
 
 import { ACTIVE_STATES, type ActiveState } from "../hooks/usePopup"
 import DisconnectedView from "./DisconnectedView"
-import EmailList from "./EmailList"
+import EmailList, { EmailListSkeleton } from "./EmailList"
 import EmptyFilterView from "./EmptyFilterView"
-import ListSkeleton from "./ListSkeleton"
 import MissingServerUrlView from "./MissingServerUrlView"
 
 interface PopupMainContentProps {
   activeState: ActiveState
   searchResults: MailMessage[] | null
+  hasMore: boolean
+  isLoadingMore: boolean
+  loadMoreEmails: () => void
   debouncedSearchQuery: string
   filterType: EmailFilterType
   appState: AppState | null
@@ -26,6 +28,9 @@ interface PopupMainContentProps {
 export function PopupMainContent({
   activeState,
   searchResults,
+  hasMore,
+  isLoadingMore,
+  loadMoreEmails,
   debouncedSearchQuery,
   filterType,
   appState,
@@ -41,7 +46,7 @@ export function PopupMainContent({
   return (
     <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {activeState === ACTIVE_STATES.LOADING ? (
-        <ListSkeleton />
+        <EmailListSkeleton />
       ) : activeState === ACTIVE_STATES.MISSING_SERVER_URL ? (
         <MissingServerUrlView />
       ) : activeState === ACTIVE_STATES.DISCONNECTED ? (
@@ -58,6 +63,9 @@ export function PopupMainContent({
               lastSyncTime={appState?.lastSyncTime}
               unreadEmailsCount={appState?.unreadEmails?.length}
               displayedEmails={searchResults}
+              hasMore={hasMore}
+              isLoadingMore={isLoadingMore}
+              loadMoreEmails={loadMoreEmails}
               markReadLoading={markReadLoading}
               flagLoading={flagLoading}
               markAllReadLoading={markAllReadLoading}

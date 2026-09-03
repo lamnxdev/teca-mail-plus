@@ -25,6 +25,9 @@ interface UseKeyboardShortcutsOptions {
   onToggleDetailFlagRef?: React.RefObject<(() => void) | null>
   onToggleDetailSummarizeRef?: React.RefObject<(() => void) | null>
   onReachedBoundary?: (direction: "top" | "bottom") => void
+  hasMore?: boolean
+  isLoadingMore?: boolean
+  onLoadMore?: () => void
 }
 
 export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions) {
@@ -108,7 +111,11 @@ export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions) {
       if (e.key === "ArrowDown" && searchResults && searchResults.length > 0) {
         e.preventDefault()
         if (focusedIndex === searchResults.length - 1) {
-          optionsRef.current.onReachedBoundary?.("bottom")
+          if (optionsRef.current.hasMore && !optionsRef.current.isLoadingMore) {
+            optionsRef.current.onLoadMore?.()
+          } else if (!optionsRef.current.hasMore) {
+            optionsRef.current.onReachedBoundary?.("bottom")
+          }
           return
         }
         setFocusedIndex((prev) =>
